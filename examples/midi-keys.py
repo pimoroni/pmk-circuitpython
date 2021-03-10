@@ -5,6 +5,9 @@
 # Demonstrates how to send MIDI notes by attaching handler functions to key
 # presses with decorators.
 
+# You'll need to connect Keybow 2040 to a computer running a DAW like Ableton,
+# or other software synth, or to a hardware synth that accepts USB MIDI.
+
 # NOTE! Requires the adafruit_midi CircuitPython library!
 
 import time
