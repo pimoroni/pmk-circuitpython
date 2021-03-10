@@ -71,7 +71,7 @@ class Keybow2040:
         self.sleeping = False
         self.was_asleep = False
         self.last_led_states = None
-        self.rotation = 0
+        # self.rotation = 0
 
         for i in range(len(self.pins)):
             _key = Key(i, self.pins[i], self.display)
@@ -217,37 +217,37 @@ class Keybow2040:
         else:
             return attach_handler
 
-    def rotate(self, degrees):
-        # Rotates all of Keybow's keys by a number of degrees, clamped to
-        # the closest multiple of 90 degrees. Because it shuffles the order
-        # of the Key instances, all of the associated attributes of the key
-        # are retained. The x/y coordinate of the keys are rotated also. It
-        # also handles negative degrees, e.g. -90 to rotate 90 degrees anti-
-        # clockwise.
+    # def rotate(self, degrees):
+    #     # Rotates all of Keybow's keys by a number of degrees, clamped to
+    #     # the closest multiple of 90 degrees. Because it shuffles the order
+    #     # of the Key instances, all of the associated attributes of the key
+    #     # are retained. The x/y coordinate of the keys are rotated also. It
+    #     # also handles negative degrees, e.g. -90 to rotate 90 degrees anti-
+    #     # clockwise.
 
-        # Rotate as follows: `keybow.rotate(270)`
+    #     # Rotate as follows: `keybow.rotate(270)`
 
-        self.rotation = degrees
-        num_rotations = degrees // 90
+    #     self.rotation = degrees
+    #     num_rotations = degrees // 90
 
-        if num_rotations == 0:
-            return
+    #     if num_rotations == 0:
+    #         return
 
-        if num_rotations < 1:
-            num_rotations = 4 + num_rotations
+    #     if num_rotations < 1:
+    #         num_rotations = 4 + num_rotations
 
-        matrix = [[(x * 4) + y for y in range(4)] for x in range(4)]
+    #     matrix = [[(x * 4) + y for y in range(4)] for x in range(4)]
 
-        for r in range(num_rotations):
-            matrix = zip(*matrix[::-1])
-            matrix = [list(x) for x in list(matrix)]
+    #     for r in range(num_rotations):
+    #         matrix = zip(*matrix[::-1])
+    #         matrix = [list(x) for x in list(matrix)]
 
-        flat_matrix = [x for y in matrix for x in y]
+    #     flat_matrix = [x for y in matrix for x in y]
 
-        for i in range(len(self.keys)):
-            self.keys[i].number = flat_matrix[i]
+    #     for i in range(len(self.keys)):
+    #         self.keys[i].number = flat_matrix[i]
 
-        self.keys = sorted(self.keys, key=lambda x:x.number)
+    #     self.keys = sorted(self.keys, key=lambda x:x.number)
 
 
 class Key:
@@ -303,7 +303,7 @@ class Key:
         if self.press_function is not None and self.pressed and not self.press_func_fired:
             self.press_function(self)
             self.press_func_fired = True
-            time.sleep(0.2)  # A little debounce
+            time.sleep(0.05)  # A little debounce
 
         # If the key has been pressed and releases, then call
         # the `release_function`, if one is attached.

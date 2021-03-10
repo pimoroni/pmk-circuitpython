@@ -16,6 +16,7 @@ keybow = Keybow2040(i2c)
 keys = keybow.keys
 
 # Enable LED sleep and set a time of 5 seconds before the LEDs turn off.
+# They'll turn back on with a tap of any key!
 keybow.led_sleep_enabled = True
 keybow.led_sleep_time = 5
 
