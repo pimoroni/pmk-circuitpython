@@ -4,7 +4,7 @@ This CircuitPython library is for the RP2040-powered Keybow 2040 from Pimoroni,
 a 16-key mini mechanical keyboard with RGB backlit keys. Find out more about 
 Keybow 2040 at the link below.
 
-[Keybow 2040 at pimoroni.com](https://shop.pimoroni.com/products/keybow-2040).
+[Keybow 2040 at pimoroni.com](https://shop.pimoroni.com/products/keybow-2040)
 
 ![Keybow 2040 with backlit keys on marble background](keybow-2040-github-1.jpg)
 
@@ -17,7 +17,7 @@ individual keys and the whole Keybow (a collection of Key instances).
 You'll need to grab the latest version of Adafruit's Keybow 2040-flavoured
 CircuitPython, from the link below.
 
-[Adafruit CircuitPython for Keybow 2040](https://circuitpython.org/board/pimoroni_keybow2040/)
+[Adafruit CircuitPython binary for Keybow 2040](https://circuitpython.org/board/pimoroni_keybow2040/)
 
 Unplug your Keybow 2040's USB-C cable, press and hold the button on the top edge
 of Keybow 2040 while plugging the USB-C cable back into your computer to mount
