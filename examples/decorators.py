@@ -5,6 +5,8 @@
 # This example demonstrates attaching functions to keys using decorators, and
 # the ability to turn the LEDs off with led_sleep_enabled and led_sleep_time.
 
+# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+
 import time
 import board
 import random

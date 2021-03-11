@@ -8,6 +8,7 @@
 
 CircuitPython driver for the Pimoroni Keybow 2040.
 
+Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
 
 * Author: Sandy Macdonald
 

@@ -8,6 +8,8 @@
 # You'll need to connect Keybow 2040 to a computer running a DAW like Ableton,
 # or other software synth, or to a hardware synth that accepts USB MIDI.
 
+# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+
 # NOTE! Requires the adafruit_midi CircuitPython library!
 
 import time

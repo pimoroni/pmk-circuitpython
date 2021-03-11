@@ -5,6 +5,8 @@
 # This example demonstrates the use of a modifier key to pick the colour of the 
 # keys' LEDs, as well as the LED sleep functionality.
 
+# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+
 import time
 import board
 import random

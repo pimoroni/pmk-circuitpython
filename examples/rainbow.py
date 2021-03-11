@@ -4,6 +4,8 @@
 
 # This example displays a rainbow animation on Keybow 2040's keys.
 
+# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+
 import time
 import math
 import board

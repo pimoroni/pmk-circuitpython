@@ -4,6 +4,8 @@
 
 # This example demonstrates how to light keys when pressed.
 
+# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+
 import board
 from keybow2040 import Keybow2040
 
