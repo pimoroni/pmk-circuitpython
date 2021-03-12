@@ -58,7 +58,7 @@ changes, then it should load up and run the code!
   * [Setup](#setup)
   * [Sending MIDI notes](#sending-midi-notes)
 * [USB HID](#usb-hid)
-  * [Setup][#setup-1]
+  * [Setup](#setup-1)
   * [Sending key presses](#sending-key-presses)
   * [Sending strings of text](#sending-strings-of-text)
 
