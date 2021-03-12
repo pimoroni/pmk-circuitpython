@@ -444,6 +444,6 @@ def hsv_to_rgb(h, s, v):
     if i == 5:
         rgb = [v, p, q]
 
-    rgb = (int(c * 255) for c in rgb)
+    rgb = tuple(int(c * 255) for c in rgb)
 
     return rgb
