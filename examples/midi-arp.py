@@ -50,7 +50,7 @@ note_time = 60 / bpm * (note_length * 4)
 # 0 = up
 # 1 = down
 # 2 = up-down
-arp_style = 1
+arp_style = 0
 
 # Start the arp in a forwards direction (1) if the style is up or up-down, or
 # or backwards (-1) if the style is down.
