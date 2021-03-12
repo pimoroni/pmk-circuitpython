@@ -43,7 +43,26 @@ code, and save it in the `code.py` file on your `CIRCUITPY` drive using your
 favourite text editor. As soon as you save the `code.py` file, or make any other
 changes, then it should load up and run the code!
 
-# In depth
+## Index
+
+* [Library functionality](#library-functionality)
+  * [Imports and setup](#imports-and-setup)
+  * [The Keybow class](#the-keybow-class)
+  * [An interlude on timing!](#an-interlude-on-timing)
+  * [Key presses](#key-presses)
+  * [LEDs!](#leds)
+  * [LED sleep](#led-sleep)
+  * [Attaching functions to keys with decorators](#attaching-functions-to-keys-with-decorators)
+  * [Key combos](#key-combos)
+* [USB MIDI](#usb-midi)
+  * [Setup](#setup)
+  * [Sending MIDI notes](#sending-midi-notes)
+* [USB HID](#usb-hid)
+  * [Setup][#setup-1]
+  * [Sending key presses](#sending-key-presses)
+  * [Sending strings of text](#sending-strings-of-text)
+
+# Library functionality
 
 This section covers most of the functionality of the library itself, without
 delving into additional functions like USB MIDI or HID (they're both covered
