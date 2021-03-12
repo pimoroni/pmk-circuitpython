@@ -54,13 +54,13 @@ changes, then it should load up and run the code!
   * [LED sleep](#led-sleep)
   * [Attaching functions to keys with decorators](#attaching-functions-to-keys-with-decorators)
   * [Key combos](#key-combos)
-* [USB MIDI](#usb-midi)
-  * [Setup](#setup)
-  * [Sending MIDI notes](#sending-midi-notes)
 * [USB HID](#usb-hid)
-  * [Setup](#setup-1)
+  * [Setup](#setup)
   * [Sending key presses](#sending-key-presses)
   * [Sending strings of text](#sending-strings-of-text)
+* [USB MIDI](#usb-midi)
+  * [Setup](#setup-1)
+  * [Sending MIDI notes](#sending-midi-notes)
 
 # Library functionality
 
@@ -368,74 +368,6 @@ held and a third to be pressed, and so on...
 The [colour-picker.py example](examples/colour-picker.py) has an example of
 using a modifier key to change the hue of the keys.
 
-# USB MIDI
-
-This covers basic MIDI note messages and how to link them to key presses.
-
-## Setup
-
-USB MIDI requires the `adafruit_midi` CircuitPython library. Download it from
-the link below and then drop the `adafruit_midi` folder into the `lib` folder on
-your `CIRCUITPY` drive.
-
-[Download the Adafruit MIDI CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_MIDI)
-
-You'll need to connect your Keybow 2040 with a USB cable to a computer running a
-software synth or DAW like Ableton Live, to a hardware synth that accepts USB
-MIDI, or through a MIDI interface that will convert the USB MIDI messages to
-regular serial MIDI through a DIN connector.
-
-Using USB MIDI, Keybow 2040 shows up as a device with the name 
-`Keybow 2040 (CircuitPython usb midi.ports[1])`
-
-In my testing, Keybow 2040 works with the Teenage Engineering OP-Z quite nicely.
-
-## Sending MIDI notes
-
-Here's a complete, minimal example of how to send a single MIDI note (middle C,
-or MIDI note number 60) when key 0 is pressed, sending a note on message when
-pressed and a note off message when released.
-
-```
-import board
-from keybow2040 import Keybow2040
-
-import usb_midi
-import adafruit_midi
-from adafruit_midi.note_off import NoteOff
-from adafruit_midi.note_on import NoteOn
-
-i2c = board.I2C()
-keybow = Keybow2040(i2c)
-keys = keybow.keys
-
-midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=0)
-
-key = keys[0]
-note = 60
-velocity = 127
-
-was_pressed = False
-
-while True:
-    keybow.update()
-
-    if key.pressed:
-        midi.send(NoteOn(note, velocity))
-        was_pressed = True
-    elif not key.pressed and was_pressed:
-        midi.send(NoteOff(note, 0))
-        was_pressed = False
-```
-
-There'a more complete example of how to set up all of Keybow's keys with 
-associated MIDI notes using decorators in the 
-[midi-keys.py example](examples/midi-keys.py).
-
-The example above, and the `midi-keys.py` example both send notes on MIDI
-channel 0 (all channels), but you can set this to a specific channel, if you
-like, by changing `out_channel=` when you instantiate your `midi` object.
-
 # USB HID
 
 This covers setting up a USB HID keyboard and linking physical key presses to 
@@ -535,7 +467,7 @@ while True:
 ```
 
 This code is available in the 
-hid-keys-simple.py example](examples/hid-keys-simple.py).
+[hid-keys-simple.py example](examples/hid-keys-simple.py).
 
 As well as sending a single keypress, you can send multiple keypresses at once,
 simply by adding them as additional argumemnts to `keyboard.send()`, e.g. 
@@ -583,3 +515,71 @@ and then check against a `time_elapsed` variable created with
 Also, be aware that the Adafruit HID CircuitPython library only currently 
 supports US Keyboard layouts, so you'll have to work around that and map any
 keycodes that differ from their US counterpart to whatever your is.
+
+# USB MIDI
+
+This covers basic MIDI note messages and how to link them to key presses.
+
+## Setup
+
+USB MIDI requires the `adafruit_midi` CircuitPython library. Download it from
+the link below and then drop the `adafruit_midi` folder into the `lib` folder on
+your `CIRCUITPY` drive.
+
+[Download the Adafruit MIDI CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_MIDI)
+
+You'll need to connect your Keybow 2040 with a USB cable to a computer running a
+software synth or DAW like Ableton Live, to a hardware synth that accepts USB
+MIDI, or through a MIDI interface that will convert the USB MIDI messages to
+regular serial MIDI through a DIN connector.
+
+Using USB MIDI, Keybow 2040 shows up as a device with the name 
+`Keybow 2040 (CircuitPython usb midi.ports[1])`
+
+In my testing, Keybow 2040 works with the Teenage Engineering OP-Z quite nicely.
+
+## Sending MIDI notes
+
+Here's a complete, minimal example of how to send a single MIDI note (middle C,
+or MIDI note number 60) when key 0 is pressed, sending a note on message when
+pressed and a note off message when released.
+
+```
+import board
+from keybow2040 import Keybow2040
+
+import usb_midi
+import adafruit_midi
+from adafruit_midi.note_off import NoteOff
+from adafruit_midi.note_on import NoteOn
+
+i2c = board.I2C()
+keybow = Keybow2040(i2c)
+keys = keybow.keys
+
+midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=0)
+
+key = keys[0]
+note = 60
+velocity = 127
+
+was_pressed = False
+
+while True:
+    keybow.update()
+
+    if key.pressed:
+        midi.send(NoteOn(note, velocity))
+        was_pressed = True
+    elif not key.pressed and was_pressed:
+        midi.send(NoteOff(note, 0))
+        was_pressed = False
+```
+
+There'a more complete example of how to set up all of Keybow's keys with 
+associated MIDI notes using decorators in the 
+[midi-keys.py example](examples/midi-keys.py).
+
+The example above, and the `midi-keys.py` example both send notes on MIDI
+channel 0 (all channels), but you can set this to a specific channel, if you
+like, by changing `out_channel=` when you instantiate your `midi` object.

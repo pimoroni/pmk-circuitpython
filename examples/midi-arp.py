@@ -11,7 +11,7 @@
 
 # Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
 
-# NOTE! Requires the adafruit_midi CircuitPython library!
+# NOTE! Requires the adafruit_midi CircuitPython library also!
 
 import time
 import board
