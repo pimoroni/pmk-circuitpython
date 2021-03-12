@@ -108,9 +108,9 @@ for k in layers[current_layer].keys():
 # To prevent the strings (as opposed to single key presses) that are sent from 
 # refiring on a single key press, the debounce time for the strings has to be 
 # longer.
-short_debounce = 0.025
-long_debounce = 0.25
-debounce = 0.025
+short_debounce = 0.03
+long_debounce = 0.15
+debounce = 0.03
 fired = False
 
 while True:
