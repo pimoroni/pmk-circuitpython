@@ -119,6 +119,9 @@ while True:
 
     # This handles the modifier and layer selector behaviour
     if modifier.held:
+        # Give some visual feedback for the modifier key
+        keys[0].led_off()
+
         # If the modifier key is held, light up the layer selector keys
         for layer in layers.keys():
             keys[layer].set_led(*colours[layer])
@@ -139,6 +142,9 @@ while True:
     else:
         for layer in layers.keys():
             keys[layer].led_off()
+
+        # Give some visual feedback for the modifier key
+        keys[0].set_led(0, 255, 25)
 
     # Loop through all of the keys in the layer and if they're pressed, get the
     # key code from the layer's key map
