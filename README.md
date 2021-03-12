@@ -43,8 +43,6 @@ code, and save it in the `code.py` file on your `CIRCUITPY` drive using your
 favourite text editor. As soon as you save the `code.py` file, or make any other
 changes, then it should load up and run the code!
 
-## Basics
-
 ## Imports and setup
 
 All of your programs will need to start with the following:
