@@ -15,7 +15,6 @@
 
 import time
 import board
-import random
 from keybow2040 import Keybow2040
 
 import usb_midi

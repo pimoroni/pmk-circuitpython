@@ -421,3 +421,29 @@ def number_to_xy(number):
     y = number // 4
 
     return (x, y)
+
+def hsv_to_rgb(h, s, v):
+    # Convert an HSV (0.0-1.0) colour to RGB (0-255)
+    if s == 0.0:
+        rgb = [v, v, v]
+    
+    i = int(h * 6.0)
+
+    f = (h*6.)-i; p,q,t = v*(1.-s), v*(1.-s*f), v*(1.-s*(1.-f)); i%=6
+    
+    if i == 0:
+        rgb = [v, t, p]
+    if i == 1:
+        rgb = [q, v, p]
+    if i == 2:
+        rgb = [p, v, t]
+    if i == 3:
+        rgb = [p, q, v]
+    if i == 4:
+        rgb = [t, p, v]
+    if i == 5:
+        rgb = [v, p, q]
+
+    rgb = (int(c * 255) for c in rgb)
+
+    return rgb

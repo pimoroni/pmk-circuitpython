@@ -7,9 +7,7 @@
 
 # Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
 
-import time
 import board
-import random
 from keybow2040 import Keybow2040
 
 # Set up Keybow
