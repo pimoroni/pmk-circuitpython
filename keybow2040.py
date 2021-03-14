@@ -55,7 +55,7 @@ _PINS = [board.SW0,
 NUM_KEYS = 16
 
 
-class Keybow2040:
+class Keybow2040(object):
     """
     Represents a Keybow 2040 and hence a set of Key instances with
     associated LEDs and key behaviours.
@@ -67,6 +67,7 @@ class Keybow2040:
         self.display = keybow2040.Keybow2040(i2c)
         self.keys = []
         self.time_of_last_press = time.monotonic()
+        self.time_since_last_press = None
         self.led_sleep_enabled = False
         self.led_sleep_time = 60
         self.sleeping = False
@@ -90,6 +91,8 @@ class Keybow2040:
         if self.any_pressed():
             self.time_of_last_press = time.monotonic()
             self.sleeping = False
+
+        self.time_since_last_press = time.monotonic() - self.time_of_last_press
 
         # If LED sleep is enabled, but not engaged, check if enough time
         # has elapsed to engage sleep. If engaged, record the state of the
@@ -269,7 +272,8 @@ class Key:
         self.state = 0
         self.pressed = 0
         self.last_state = None
-        self.time_pressed = None
+        self.time_of_last_press = time.monotonic()
+        self.time_since_last_press = None
         self.time_held_for = 0
         self.held = False
         self.hold_time = 0.75
@@ -285,6 +289,8 @@ class Key:
         self.hold_function = None
         self.press_func_fired = False
         self.hold_func_fired = False
+        self.debounce = 0.125
+        self.key_locked = False
 
     def get_state(self):
         # Returns the state of the key (0=not pressed, 1=pressed).
@@ -295,16 +301,24 @@ class Key:
         # Updates the state of the key and updates all of its
         # attributes.
 
+        self.time_since_last_press = time.monotonic() - self.time_of_last_press
+
+        # Keys get locked during the debounce time.
+        if self.time_since_last_press < self.debounce:
+            self.key_locked = True
+        else:
+            self.key_locked = False
+
         self.state = self.get_state()
         self.pressed = self.state
         update_time = time.monotonic()
 
         # If there's a `press_function` attached, then call it,
         # returning the key object and the pressed state.
-        if self.press_function is not None and self.pressed and not self.press_func_fired:
+        if self.press_function is not None and self.pressed and not self.press_func_fired and not self.key_locked:
             self.press_function(self)
             self.press_func_fired = True
-            time.sleep(0.05)  # A little debounce
+            # time.sleep(0.05)  # A little debounce
 
         # If the key has been pressed and releases, then call
         # the `release_function`, if one is attached.
@@ -319,15 +333,15 @@ class Key:
             self.last_state = False
 
         # If the key has just been pressed, then record the
-        # `time_pressed`, and update last_state.
+        # `time_of_last_press`, and update last_state.
         elif self.pressed and self.last_state == False:
-            self.time_pressed = update_time
+            self.time_of_last_press = update_time
             self.last_state = True
 
         # If the key is pressed and held, then update the
         # `time_held_for` variable.
         elif self.pressed and self.last_state == True:
-            self.time_held_for = update_time - self.time_pressed
+            self.time_held_for = update_time - self.time_of_last_press
             self.last_state = True
 
         # If the `hold_time` theshold is crossed, then call the
