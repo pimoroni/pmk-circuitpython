@@ -9,7 +9,7 @@
 # currently playing step in the sequence is shown with a moving LED across the
 # eight steps.
 
-# Each track is colour-coded: track 1 is orange, track 2 teal, track 3 is pink,
+# Each track is colour-coded: track 1 is orange, track 2 blue, track 3 is pink,
 # and track 4 is green. Tracks can be selected by pressing and holding the 
 # bottom left orange track select key and then tapping one of the four track
 # keys on the row above.
@@ -20,10 +20,15 @@
 # The sequencer can be cleared by holding the track selector key (orange, bottom
 # left) and then holding the start/stop key (red/green, bottom right).
 
-# Tempo can be increased or decreased by holding the tempo selector key (teal,
-# second from left, on the bottom row) and then tapping teal key on the row 
+# Tempo can be increased or decreased by holding the tempo selector key (blue,
+# second from left, on the bottom row) and then tapping blue key on the row 
 # above to shift tempo down, or the pink key to shift it up. Tempo is increased/
 # decreased by 5 BPM on each press.
+
+# If an active step is held down, the second bottom row of keys lights to allow
+# the note to be shifted down/up (the left two keys, decremented/incremented by
+# one each time) and the note velocity to be shifted down/up (the right two keys
+# decremented/incremented by four each time).
 
 # You'll need to connect Keybow 2040 to a computer running a DAW like Ableton,
 # or other software synth, or to a hardware synth that accepts USB MIDI.
@@ -50,13 +55,14 @@ from adafruit_midi.note_on import NoteOn
 # rows of four keys)
 TRACK_KEYS = [3, 7, 11, 15, 2, 6, 10, 14]
 
-# The colours for the LEDs on each track: orange, teal, pink, green
-TRACK_COLOURS = [
-    (255, 255, 0),
-    (0, 255, 175),
-    (255, 0, 255),
-    (0, 255, 0)
-]
+ORANGE = (255, 255, 0)
+BLUE = (0, 255, 175)
+PINK = (255, 0, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
+# The colours for the LEDs on each track: orange, blue, pink, green
+TRACK_COLOURS = [ORANGE, BLUE, PINK, GREEN]
 
 # The MIDI channels for each track in turn: 1, 2, 3, 4
 MIDI_CHANNELS = [0, 1, 2, 3]
@@ -65,26 +71,40 @@ MIDI_CHANNELS = [0, 1, 2, 3]
 # keys, the four keys on the row above it.
 TRACK_SELECTOR = 0
 TRACK_SELECTOR_KEYS = [1, 5, 9, 13]
-TRACK_SELECTOR_COLOUR = (255, 255, 0)
+TRACK_SELECTOR_COLOUR = ORANGE
 
 # The bottom right key. When pressed, it toggles the sequencer on or off. Green
 # indicates that it is currently playing, red that it is stopped.
 START_STOP = 12
-START_COLOUR = (0, 255, 0)
-STOP_COLOUR = (255, 0, 0)
+START_COLOUR = GREEN
+STOP_COLOUR = RED
 
-# The key second from left on the bottom row, teal. When pressed, it brings up
-# the tempo down/up buttons on the row above it. The left teal key shifts the 
+# The key second from left on the bottom row, blue. When pressed, it brings up
+# the tempo down/up buttons on the row above it. The left blue key shifts the 
 # tempo down, the right pink key shifts the tempo up.
 TEMPO_SELECTOR = 4
-TEMPO_SELECTOR_COLOUR = (0, 255, 175)
-TEMPO_DOWN = 5
-TEMPO_DOWN_COLOUR = (0, 255, 175)
-TEMPO_UP = 9
-TEMPO_UP_COLOUR = (255, 0, 255)
+TEMPO_SELECTOR_COLOUR = BLUE
+TEMPO_DOWN = 1
+TEMPO_DOWN_COLOUR = BLUE
+TEMPO_UP = 5
+TEMPO_UP_COLOUR = PINK
+
+NOTE_DOWN = 1
+NOTE_DOWN_COLOUR = BLUE
+NOTE_UP = 5
+NOTE_UP_COLOUR = PINK
+
+# When an active step is held down, the second bottom row of keys lights to
+# allow the note to be shifted down/up (the left two keys) and the note velocity
+# to be shifted down/up (the right two keys).
+VELOCITY_DOWN = 9
+VELOCITY_DOWN_COLOUR = BLUE
+VELOCITY_UP = 13
+VELOCITY_UP_COLOUR = PINK
 
 # The default starting BPM.
 BPM = 85
+MAX_BPM = 200
 
 # Dictates the time after which a key is "held".
 KEY_HOLD_TIME = 0.25
@@ -93,6 +113,13 @@ KEY_HOLD_TIME = 0.25
 PLAY_BRIGHTNESS = 1.0
 ACTIVE_BRIGHTNESS = 0.2
 STEP_BRIGHTNESS = 0.05
+
+# Start on middle C and a reasonably high velocity.
+DEFAULT_NOTE = 60
+DEFAULT_VELOCITY = 99
+MAX_VELOCITY = 127
+MAX_NOTE = 127
+VELOCITY_STEP = 4
 
 class Sequencer(Keybow2040):
     """
@@ -112,6 +139,14 @@ class Sequencer(Keybow2040):
         for channel in MIDI_CHANNELS:
             midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=channel)
             self.midi_channels.append(midi)
+
+        # These keys represent the steps on the tracks.
+        self.track_keys = []
+
+        for i in range(len(TRACK_KEYS)):
+            track_key = self.keys[TRACK_KEYS[i]]
+            track_key.index = i
+            self.track_keys.append(track_key)
 
         # Holds the list of tracks, a set of Track instances.
         self.tracks = []
@@ -133,6 +168,13 @@ class Sequencer(Keybow2040):
         self.num_steps = 8
         self.this_step_num = 0
         self.last_step_num = 0
+        self.steps_held = []
+
+        # Note change  attributes.
+        self.note_down = self.keys[NOTE_DOWN]
+        self.note_up = self.keys[NOTE_UP]
+        self.velocity_down = self.keys[VELOCITY_DOWN]
+        self.velocity_up = self.keys[VELOCITY_UP]
 
         # Is the sequencer running?
         self.running = False
@@ -157,9 +199,9 @@ class Sequencer(Keybow2040):
         self.track_select_keys = []
 
         for i in range(len(TRACK_SELECTOR_KEYS)):
-            track_key = self.keys[TRACK_SELECTOR_KEYS[i]]
-            track_key.rgb = TRACK_COLOURS[i]
-            self.track_select_keys.append(track_key)
+            track_select_key = self.keys[TRACK_SELECTOR_KEYS[i]]
+            track_select_key.rgb = TRACK_COLOURS[i]
+            self.track_select_keys.append(track_select_key)
 
         # Set the key hold time for all the keys. A little shorter than the 
         # default for Keybow. Makes controlling the sequencer a bit more fluid.
@@ -168,14 +210,32 @@ class Sequencer(Keybow2040):
 
         # Attach step_select function to keys in track steps. If pressed it
         # toggles the state of the step.
-        for i in range(len(TRACK_KEYS)):
-            key = self.keys[TRACK_KEYS[i]]
-
-            @self.on_press(key)
+        for key in self.track_keys:
+            @self.on_release(key)
             def step_select(key):
-                step_num = TRACK_KEYS.index(key.number)
-                step = self.tracks[self.current_track].steps[step_num]
-                step.toggle()
+                if not key.held:
+                    step = self.tracks[self.current_track].steps[key.index]
+                    step.toggle()
+                    if not step.active:
+                        current_note = step.note
+                        self.midi_channels[track.channel].send(NoteOff(current_note, 0))
+                        step.note = DEFAULT_NOTE
+                        step.velocity = DEFAULT_VELOCITY
+                else:
+                    self.steps_held.remove(key.index)
+                    self.note_down.led_off()
+                    self.note_up.led_off()
+                    self.velocity_down.led_off()
+                    self.velocity_up.led_off()
+
+            # When step held, toggle on the note and velocity up/down keys.
+            @self.on_hold(key)
+            def step_change(key):
+                self.steps_held.append(key.index)
+                self.note_down.set_led(*NOTE_DOWN_COLOUR)
+                self.note_up.set_led(*NOTE_UP_COLOUR)
+                self.velocity_down.set_led(*VELOCITY_DOWN_COLOUR)
+                self.velocity_up.set_led(*VELOCITY_UP_COLOUR)
 
         # Attach hold function to track selector key that sets it active and
         # lights the track select keys.
@@ -183,7 +243,9 @@ class Sequencer(Keybow2040):
         def track_selector_hold(key):
             self.track_selector_active = True
 
-            for key in self.track_select_keys:
+            for k in range(len(self.track_select_keys)):
+                key = self.track_select_keys[k]
+                key.set_led(*TRACK_COLOURS[k])
                 key.led_on()
 
         # Attach release function to track selector key that sets it inactive
@@ -195,41 +257,71 @@ class Sequencer(Keybow2040):
             for key in self.track_select_keys:
                 key.led_off()
 
-        # Track 0 select.
+        # Handles track 0 select, tempo down, note down.
+        # Pressing the tempo down key shifts the tempo down by
+        # 5 bpm each time it is pressed, with a lower limit of 5 BPM.
+        # If notes are held, then tapping this key decrements the MIDI note 
+        # number by one.
         @self.on_press(self.track_select_keys[0])
         def track_select_0_press(key):
             if self.track_selector_active:
                 self.current_track = 0
+            elif self.tempo_select_active:
+                if self.bpm > 5:
+                    self.bpm -= 5
+            elif len(self.steps_held):
+                for i in self.steps_held:
+                    step = self.tracks[self.current_track].steps[i]
+                    step.last_notes.append(step.note)
+                    step.note_changed = True
+                    if step.note > 0:
+                        step.note -= 1
 
-        # Special case to handle track 1 select and tempo down.
-        # Pressing the tempo down key shifts the tempo down by
-        # 5 bpm each time it is pressed, with a lower limit of 5 BPM.
+        # Handles track 1 select, tempo up, note up.
+        # Pressing the tempo up key shifts the tempo up by
+        # 5 bpm each time it is pressed, with an upper limit of 200 BPM.
+        # If notes are held, then tapping this key increments the MIDI note 
+        # number by one.
         @self.on_press(self.track_select_keys[1])
         def track_select_1_press(key):
             if self.track_selector_active:
                 self.current_track = 1
-            else:
-                if self.tempo_select_active:
-                    if self.bpm > 5:
-                        self.bpm -= 5
+            elif self.tempo_select_active:
+                if self.bpm < 200:
+                    self.bpm += 5
+            elif len(self.steps_held):
+                for i in self.steps_held:
+                    step = self.tracks[self.current_track].steps[i]
+                    step.last_notes.append(step.note)
+                    step.note_changed = True
+                    if step.note < MAX_NOTE:
+                        step.note += 1
 
-        # Special case to handle track 2 select and tempo up.
-        # Pressing the tempo up key shifts the tempo up by
-        # 5 bpm each time it is pressed, with an upper limit of 200 BPM.
+        # Handles track 2 select, velocity down.
+        # If notes are held, then tapping this key decrements the velocity by
+        # four.
         @self.on_press(self.track_select_keys[2])
         def track_select_2_press(key):
             if self.track_selector_active:
                 self.current_track = 2
-            else:
-                if self.tempo_select_active:
-                    if self.bpm < 200:
-                        self.bpm += 5
+            elif len(self.steps_held):
+                for i in self.steps_held:
+                    step = self.tracks[self.current_track].steps[i]
+                    if step.velocity > 0 + VELOCITY_STEP:
+                        step.velocity -= VELOCITY_STEP
 
-        # Track 3 select.
+        # Handles track 3 select, velocity up.
+        # If notes are held, then tapping this key increments the velocity by 
+        # four.
         @self.on_press(self.track_select_keys[3])
         def track_select_3_press(key):
             if self.track_selector_active:
                 self.current_track = 3
+            elif len(self.steps_held):
+                for i in self.steps_held:
+                    step = self.tracks[self.current_track].steps[i]
+                    if step.velocity <= MAX_VELOCITY - VELOCITY_STEP:
+                        step.velocity += VELOCITY_STEP
 
         # Attach press function to start/stop key that toggles whether the 
         # sequencer is running and toggles its colour between green (running)
@@ -259,6 +351,8 @@ class Sequencer(Keybow2040):
             self.tempo_select_active = True
             self.tempo_down.set_led(*TEMPO_DOWN_COLOUR)
             self.tempo_up.set_led(*TEMPO_UP_COLOUR)
+            self.track_select_keys[2].led_off()
+            self.track_select_keys[3].led_off()
 
         # Attach release function that furns off the tempo down/up LEDs.
         @self.on_release(self.tempo_selector)
@@ -285,6 +379,13 @@ class Sequencer(Keybow2040):
                         last_step.update()
                         last_note = last_step.note
  
+                        # Helps prevent stuck notes.
+                        if last_step.note_changed:
+                            for note in last_step.last_notes:
+                                self.midi_channels[track.channel].send(NoteOff(note, 0))
+                            last_step.note_changed = False
+                            last_step.last_notes = []
+
                         # If last step is active, send MIDI note off message.
                         if last_step.active:
                             self.midi_channels[track.channel].send(NoteOff(last_note, 0))
@@ -295,6 +396,13 @@ class Sequencer(Keybow2040):
                         this_step.update()
                         this_note = this_step.note
                         this_vel = this_step.velocity
+
+                        # Helps prevent stuck notes
+                        if this_step.note_changed:
+                            for note in this_step.last_notes:
+                                self.midi_channels[track.channel].send(NoteOff(note, 0))
+                            this_step.note_changed = False
+                            this_step.last_notes = []
 
                         # If this step is active, send MIDI note on message.
                         if this_step.active:
@@ -319,11 +427,11 @@ class Sequencer(Keybow2040):
         # Update the step_time, in case the BPM has been changed.
         self.step_time = 60.0 / self.bpm / (self.num_steps / 2)
 
-
     def clear_tracks(self):
         # Clears the steps on all tracks.
         for track in self.tracks:
             track.clear_steps()
+
 
 class Track:
     """
@@ -340,13 +448,12 @@ class Track:
         self.channel = channel
         self.steps = []
         self.sequencer = sequencer
+        self.track_keys = self.sequencer.track_keys
 
         # For each key in the track, create a Step instance and add to 
         # self.steps.
-        for i in range(len(TRACK_KEYS)):
-            index = i
-            key = sequencer.keys[TRACK_KEYS[i]]
-            step = Step(index, key, self)
+        for i, key in enumerate(self.track_keys):
+            step = Step(i, key, self)
             self.steps.append(step)
 
         # Default to having the track active.
@@ -379,6 +486,11 @@ class Track:
         for step in self.steps:
             step.active = False
 
+    def midi_panic(self):
+        for i in range(128):
+            self.sequencer.midi_channels[self.channel].send(NoteOff(i, 0))
+
+
 class Step:
     """
     Represents a step on a track.
@@ -393,8 +505,11 @@ class Step:
         self.track = track
         self.active = False
         self.playing = False
-        self.velocity = 127
-        self.note = 60
+        self.held = False
+        self.velocity = DEFAULT_VELOCITY
+        self.note = DEFAULT_NOTE
+        self.last_notes = []
+        self.note_changed = False
         self.rgb = self.track.rgb
         self.sequencer = self.track.sequencer
 

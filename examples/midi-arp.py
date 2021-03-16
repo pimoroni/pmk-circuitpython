@@ -34,11 +34,11 @@ midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=5)
 rgb = (255, 50, 0)
 
 # MIDI velocity.
-start_note = 60
+start_note = 36
 velocity = 100
 
 # Beats per minute
-bpm = 120
+bpm = 80
 
 # Play 16th notes
 note_length = 1/16
@@ -50,7 +50,7 @@ note_time = 60 / bpm * (note_length * 4)
 # 0 = up
 # 1 = down
 # 2 = up-down
-arp_style = 0
+arp_style = 2
 
 # Start the arp in a forwards direction (1) if the style is up or up-down, or
 # or backwards (-1) if the style is down.
