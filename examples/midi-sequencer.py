@@ -343,6 +343,8 @@ class Sequencer(Keybow2040):
         def start_stop_hold(key):
             if self.track_selector_active:
                 self.clear_tracks()
+                for track in self.tracks:
+                    track.midi_panic()
 
         # Attach hold function that lights the tempo down/up keys when the
         # tempo selector key is held.
