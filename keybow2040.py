@@ -31,7 +31,8 @@ Notes
 
 import time
 import board
-import adafruit_is31fl3731
+
+from adafruit_is31fl3731.keybow2040 import Keybow2040 as Display
 from digitalio import DigitalInOut, Direction, Pull
 
 # These are the 16 switches on Keybow, with their board-defined names.
@@ -64,7 +65,7 @@ class Keybow2040(object):
     """
     def __init__(self, i2c):
         self.pins = _PINS
-        self.display = adafruit_is31fl3731.Keybow2040(i2c)
+        self.display = Display(i2c)
         self.keys = []
         self.time_of_last_press = time.monotonic()
         self.time_since_last_press = None
