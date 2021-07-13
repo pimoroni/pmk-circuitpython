@@ -41,7 +41,7 @@ For Pico RGB Keypad Base:
 * Adafruit CircuitPython firmware for Raspberry Pi Pico:
   <https://circuitpython.org/board/raspberry_pi_pico/>_
 
-* Adafruit CircuitPython Dotstar library:
+* Adafruit CircuitPython DotStar library:
   <https://github.com/adafruit/Adafruit_CircuitPython_DotStar>_
 
 """
