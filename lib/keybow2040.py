@@ -6,66 +6,57 @@
 `Keybow 2040 CircuitPython library`
 ====================================================
 
-CircuitPython driver for the Pimoroni Keybow 2040.
+CircuitPython driver for the Pimoroni Keybow 2040 and Pico RGB Keypad Base.
 
-Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+Drop the `lib` contents (`keybow2040.py` file and `keybow_hardware`)
+into your `lib` folder on your `CIRCUITPY` drive.
 
-* Author: Sandy Macdonald
+* Authors: Sandy Macdonald, Maciej Sokolowski
 
 Notes
 --------------------
 
 **Hardware:**
 
+One of:
+
 * Pimoroni Keybow 2040
   <https://shop.pimoroni.com/products/keybow-2040>_
 
+* Pimoroni Pico RGB Keypad Base
+  <https://shop.pimoroni.com/products/pico-rgb-keypad-base>_
+
 **Software and Dependencies:**
+
+For Keybow 2040:
 
 * Adafruit CircuitPython firmware for Keybow 2040:
   <https://circuitpython.org/board/pimoroni_keybow2040/>_
 
 * Adafruit CircuitPython IS31FL3731 library:
   <https://github.com/adafruit/Adafruit_CircuitPython_IS31FL3731>_
+
+For Pico RGB Keypad Base:
+
+* Adafruit CircuitPython firmware for Raspberry Pi Pico:
+  <https://circuitpython.org/board/raspberry_pi_pico/>_
+
+* Adafruit CircuitPython Dotstar library:
+  <https://github.com/adafruit/Adafruit_CircuitPython_DotStar>_
+
 """
 
 import time
-import board
-
-from adafruit_is31fl3731.keybow2040 import Keybow2040 as Display
-from digitalio import DigitalInOut, Direction, Pull
-
-# These are the 16 switches on Keybow, with their board-defined names.
-_PINS = [board.SW0,
-        board.SW1,
-        board.SW2,
-        board.SW3,
-        board.SW4,
-        board.SW5,
-        board.SW6,
-        board.SW7,
-        board.SW8,
-        board.SW9,
-        board.SW10,
-        board.SW11,
-        board.SW12,
-        board.SW13,
-        board.SW14,
-        board.SW15]
-
-NUM_KEYS = 16
-
 
 class Keybow2040(object):
     """
     Represents a Keybow 2040 and hence a set of Key instances with
     associated LEDs and key behaviours.
 
-    :param i2c: the I2C bus for Keybow 2040
+    :param hardware: object representing a board hardware
     """
-    def __init__(self, i2c):
-        self.pins = _PINS
-        self.display = Display(i2c)
+    def __init__(self, hardware):
+        self.hardware = hardware
         self.keys = []
         self.time_of_last_press = time.monotonic()
         self.time_since_last_press = None
@@ -76,8 +67,8 @@ class Keybow2040(object):
         self.last_led_states = None
         # self.rotation = 0
 
-        for i in range(len(self.pins)):
-            _key = Key(i, self.pins[i], self.display)
+        for i in range(self.hardware.num_keys()):
+            _key = Key(i, self.hardware)
             self.keys.append(_key)
 
     def update(self):
@@ -261,15 +252,11 @@ class Key:
     LED behaviours.
 
     :param number: the key number (0-15) to associate with the key
-    :param pin: the pin object for the key, e.g. board.SW0
-    :param display: the IS31FL3731 matrix instance for the LEDs
+    :param hardware:  object representing a board hardware
     """
-    def __init__(self, number, pin, display):
-        self.pin = pin
+    def __init__(self, number, hardware):
+        self.hardware = hardware
         self.number = number
-        self.switch = DigitalInOut(self.pin)
-        self.switch.direction = Direction.INPUT
-        self.switch.pull = Pull.UP
         self.state = 0
         self.pressed = 0
         self.last_state = None
@@ -283,7 +270,6 @@ class Key:
         self.lit = False
         self.xy = self.get_xy()
         self.x, self.y = self.xy
-        self.display = display
         self.led_off()
         self.press_function = None
         self.release_function = None
@@ -296,7 +282,7 @@ class Key:
     def get_state(self):
         # Returns the state of the key (0=not pressed, 1=pressed).
 
-        return int(not self.switch.value)
+        return int(self.hardware.switch_state(self.number))
 
     def update(self):
         # Updates the state of the key and updates all of its
@@ -385,7 +371,7 @@ class Key:
             self.lit = True
             self.rgb = [r, g, b]
 
-        self.display.pixelrgb(self.x, self.y, r, g, b)
+        self.hardware.set_pixel(self.number, r, g, b)
 
     def led_on(self):
         # Turn the LED on, using its current RGB value.
