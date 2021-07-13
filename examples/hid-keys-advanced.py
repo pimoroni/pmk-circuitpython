@@ -17,13 +17,15 @@
 # You'll need to connect Keybow 2040 to a computer, as you would with a regular
 # USB keyboard.
 
-# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# into your `lib` folder on your `CIRCUITPY` drive.
 
 # NOTE! Requires the adafruit_hid CircuitPython library also!
 
-import board
 import time
 from keybow2040 import Keybow2040
+from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
+#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
@@ -34,8 +36,7 @@ from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 
 # Set up Keybow
-i2c = board.I2C()
-keybow = Keybow2040(i2c)
+keybow = Keybow2040(Hardware())
 keys = keybow.keys
 
 # Set up the keyboard and layout

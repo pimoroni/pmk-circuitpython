@@ -9,13 +9,15 @@
 # You'll need to connect Keybow 2040 to a computer running a DAW like Ableton,
 # or other software synth, or to a hardware synth that accepts USB MIDI.
 
-# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# into your `lib` folder on your `CIRCUITPY` drive.
 
 # NOTE! Requires the adafruit_midi CircuitPython library also!
 
 import time
-import board
 from keybow2040 import Keybow2040
+from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
+#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
 
 import usb_midi
 import adafruit_midi
@@ -23,8 +25,7 @@ from adafruit_midi.note_off import NoteOff
 from adafruit_midi.note_on import NoteOn
 
 # Set up Keybow
-i2c = board.I2C()
-keybow = Keybow2040(i2c)
+keybow = Keybow2040(Hardware())
 keys = keybow.keys
 
 # Set USB MIDI up on channel 0.

@@ -17,11 +17,13 @@
 #
 # Keep OBS focussed when using these... to avoid weirdness!
 
-# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# into your `lib` folder on your `CIRCUITPY` drive.
 
 import math
-import board
 from keybow2040 import Keybow2040, number_to_xy, hsv_to_rgb
+from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
+#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
@@ -57,8 +59,7 @@ keyboard = Keyboard(usb_hid.devices)
 layout = KeyboardLayoutUS(keyboard)
 
 # Set up Keybow
-i2c = board.I2C()
-keybow = Keybow2040(i2c)
+keybow = Keybow2040(Hardware())
 keys = keybow.keys
 
 states = [False for _ in keys]

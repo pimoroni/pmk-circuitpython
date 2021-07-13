@@ -8,7 +8,7 @@
 
 CircuitPython driver for the Pimoroni Keybow 2040 and Pico RGB Keypad Base.
 
-Drop the `lib` contents (`keybow2040.py` file and `keybow_hardware`)
+Drop the `lib` contents (`keybow2040.py` file and `keybow_hardware` folder)
 into your `lib` folder on your `CIRCUITPY` drive.
 
 * Authors: Sandy Macdonald, Maciej Sokolowski
