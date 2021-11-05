@@ -5,16 +5,17 @@
 # This example demonstrates the use of a modifier key to pick the colour of the 
 # keys' LEDs, as well as the LED sleep functionality.
 
-# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive.
+# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# into your `lib` folder on your `CIRCUITPY` drive.
 
-import board
 from keybow2040 import Keybow2040, number_to_xy, hsv_to_rgb
+from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
+#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
 
 MODIFIER_KEY = 0
 
 # Set up Keybow
-i2c = board.I2C()
-keybow = Keybow2040(i2c)
+keybow = Keybow2040(Hardware())
 keys = keybow.keys
 
 # Enable LED sleep and set a time of 5 seconds before the LEDs turn off.

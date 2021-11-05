@@ -44,14 +44,15 @@
 
 # Tracks' notes are sent on MIDI channels 1-4.
 
-# Drop the keybow2040.py file into your `lib` folder on your `CIRCUITPY` drive,
-# and then save this code in the `code.py` file.
+# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# into your `lib` folder on your `CIRCUITPY` drive.
 
 # NOTE! Requires the adafruit_midi CircuitPython library also!
 
 import time
-import board
 from keybow2040 import Keybow2040
+from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
+#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
 
 import usb_midi
 import adafruit_midi
@@ -138,7 +139,7 @@ class Sequencer(Keybow2040):
     a set of Step instances. This class is a subclass of the Keybow2040 class,
     so it inherits all of its methods and key methods.
 
-    :param i2c: the I2C bus for Keybow 2040
+    :param hardware: object representing a board hardware
     """
     def __init__(self, *args, **kwargs):
         super(Sequencer, self).__init__(*args, **kwargs)
@@ -640,11 +641,8 @@ def rgb_with_brightness(r, g, b, brightness=1.0):
     return r, g, b
 
 
-# Set up Keybow's I2C bus.
-i2c = board.I2C()
-
 # Instantiate the sequencer.
-sequencer = Sequencer(i2c)
+sequencer = Sequencer(Hardware())
 
 while True:
     # Always remember to call sequencer.update() on every iteration of the main
