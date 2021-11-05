@@ -44,15 +44,15 @@
 
 # Tracks' notes are sent on MIDI channels 1-4.
 
-# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# Drop the `pmk` folder
 # into your `lib` folder on your `CIRCUITPY` drive.
 
 # NOTE! Requires the adafruit_midi CircuitPython library also!
 
 import time
-from keybow2040 import Keybow2040
-from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
-#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
+from pmk import PMK
+from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
+#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
 
 import usb_midi
 import adafruit_midi

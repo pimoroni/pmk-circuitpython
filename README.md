@@ -1,14 +1,12 @@
-# Keybow 2040 CircuitPython
+# PMK - Pimoroni Mechanical/Mushy Keypad - CircuitPython <!-- omit in toc -->
 
 This CircuitPython library is for the RP2040-powered Keybow 2040 from Pimoroni,
-a 16-key mini mechanical keyboard with RGB backlit keys. Find out more about 
-Keybow 2040 at the link below.
+a 16-key mini mechanical keyboard with RGB backlit keys.
 
 [Learn more about Keybow 2040 at pimoroni.com](https://shop.pimoroni.com/products/keybow-2040)
 
 It also works on Raspberry Pi Pico mounted in RGB Keypad Base from Pimoroni
-a 16-key mini rubber keyboard with RGB backlit keys. Find out more about
-Pico RGB Keypad Base at the link below.
+a 16-key mini rubber keyboard with RGB backlit keys.
 
 [Learn more about Pico RGB Keypad Base at pimoroni.com](https://shop.pimoroni.com/products/pico-rgb-keypad-base)
 
@@ -18,11 +16,58 @@ individual keys and the whole Keybow (a collection of Key instances).
 
 ![Keybow 2040 with backlit keys on marble background](keybow-2040-github-1.jpg)
 
+# Index <!-- omit in toc -->
+
+- [Getting started quickly!](#getting-started-quickly)
+  - [Basic Requirements](#basic-requirements)
+  - [Keybow 2040 Requirements](#keybow-2040-requirements)
+  - [Pico RGB Keypad Requirements](#pico-rgb-keypad-requirements)
+- [Library functionality](#library-functionality)
+  - [Imports and setup](#imports-and-setup)
+  - [The Keybow class](#the-keybow-class)
+  - [An interlude on timing!](#an-interlude-on-timing)
+  - [Key presses](#key-presses)
+    - [Keybow class methods for detecting presses and key states](#keybow-class-methods-for-detecting-presses-and-key-states)
+    - [Key class methods for detecting key presses](#key-class-methods-for-detecting-key-presses)
+  - [LEDs!](#leds)
+  - [LED sleep](#led-sleep)
+  - [Attaching functions to keys with decorators](#attaching-functions-to-keys-with-decorators)
+  - [Key combos](#key-combos)
+- [USB HID](#usb-hid)
+  - [Setup](#setup)
+  - [Sending key presses](#sending-key-presses)
+  - [Sending strings of text](#sending-strings-of-text)
+- [USB MIDI](#usb-midi)
+  - [Setup](#setup-1)
+  - [Sending MIDI notes](#sending-midi-notes)
+
 # Getting started quickly!
 
-## Hardware-dependent part
+## Basic Requirements
 
-### Keybow 2040
+Drop the `lib` contents (the `pmk` folder) from this library into the `lib` folder
+on your `CIRCUITPY` drive also, and you're all set!
+
+Pick one of the [examples](examples) (I'd suggest the 
+[reactive.press.py](examples/reactive-press.py) example to begin), copy the 
+code, and save it in the `code.py` file on your `CIRCUITPY` drive using your 
+favourite text editor. As soon as you save the `code.py` file, or make any other
+changes, then it should load up and run the code!
+
+Examples are by default using Keybow 2040 hardware, if you want to run them
+on Pico RGB Keypad, you need to change the hardware. Comment out the line:
+
+```
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+```
+
+and uncomment the line:
+
+```
+from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware
+```
+
+## Keybow 2040 Requirements
 
 You'll need to grab the latest version of Adafruit's Keybow 2040-flavoured
 CircuitPython, from the link below.
@@ -44,7 +89,7 @@ your `CIRCUITPY` drive.
 
 [Download the Adafruit IS31FL3731 CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_IS31FL3731)
 
-### Pico RGB Keypad
+## Pico RGB Keypad Requirements
 
 You'll need to grab the latest version of Adafruit's Raspberry Pi Pico-flavoured
 CircuitPython, from the link below.
@@ -66,46 +111,6 @@ your `CIRCUITPY` drive.
 
 [Download the Adafruit DotStar CircuitPython library](<https://github.com/adafruit/Adafruit_CircuitPython_DotStar)
 
-## Hardware-independent part
-
-Finally, drop the `lib` contents (`keybow2040.py` file and `keybow_hardware` folder) from this library into the `lib` folder
-on your `CIRCUITPY` drive also, and you're all set!
-
-Pick one of the [examples](examples) (I'd suggest the 
-[reactive.press.py](examples/reactive-press.py) example to begin), copy the 
-code, and save it in the `code.py` file on your `CIRCUITPY` drive using your 
-favourite text editor. As soon as you save the `code.py` file, or make any other
-changes, then it should load up and run the code!
-
-Examples are by default using Keybow 2040 hardware, if you want to run them
-on Pico RGB Keypad, you need to change the hardware. Comment out the line:
-```
-from keybow_hardware.pim56x import PIM56X as Hardware
-```
-and uncomment the line:
-```
-from keybow_hardware.pim551 import PIM551 as Hardware
-```
-
-## Index
-
-* [Library functionality](#library-functionality)
-  * [Imports and setup](#imports-and-setup)
-  * [The Keybow class](#the-keybow-class)
-  * [An interlude on timing!](#an-interlude-on-timing)
-  * [Key presses](#key-presses)
-  * [LEDs!](#leds)
-  * [LED sleep](#led-sleep)
-  * [Attaching functions to keys with decorators](#attaching-functions-to-keys-with-decorators)
-  * [Key combos](#key-combos)
-* [USB HID](#usb-hid)
-  * [Setup](#setup)
-  * [Sending key presses](#sending-key-presses)
-  * [Sending strings of text](#sending-strings-of-text)
-* [USB MIDI](#usb-midi)
-  * [Setup](#setup-1)
-  * [Sending MIDI notes](#sending-midi-notes)
-
 # Library functionality
 
 This section covers most of the functionality of the library itself, without
@@ -117,11 +122,11 @@ later!)
 All of your programs will need to start with the following:
 
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
-from keybow2040 import Keybow2040
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+from pmk import PMK
 
 hardware = Hardware()
-keybow = Keybow2040(hardware)
+keybow = PMK(hardware)
 ```
 
 First, this imports a hardware object representing the board. A hardware object
@@ -130,27 +135,27 @@ via uniform interface. You need to choose the correct hardware object for
 your hardware. If you're curious, hardware differences are explained below,
 but all you need to know is that for Keybow 2040 you need an import:
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
 ```
 and for Pico RGB Keypad Base:
 ```
-from keybow_hardware.pim551 import PIM551 as Hardware
+from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware
 ```
 
-On Keybow 2040 (`PIM56X`) keys are read directly via GPIO, and LEDs are set
+On Keybow 2040 (`Keybow2040`) keys are read directly via GPIO, and LEDs are set
 via IS31FL3731 LED driver connected over I2C bus.
 
-On Pico RGB Keypad Base (`PIM551`) keys are connected via TCA9555 GPIO extender
+On Pico RGB Keypad Base (`RGBKeypadBase`) keys are connected via TCA9555 GPIO extender
 connected over I2C bus and LEDs are DotStar LEDs connected via SPI bus.
 
 Since both boards use I2C bus, hardware object also exposes it in case you
 need to access it (Keybow 2040 has even I2C connecting pads exposed):
 i2c = hardware.i2c()
 
-In the rest of this file examples of the code will use `PIM56X` hardware object.
+In the rest of this file examples of the code will use `Keybow2040` hardware object.
 If you're running them on Pico RGB Keypad Base, don't forget to change it accordingly.
 
-The `Keybow2040()` class, imported from the `keybow2040` module, is instantiated
+The `PMK()` class, imported from the `pmk` module, is instantiated
 and passed the hardware object. Instantiating this sets up all of the pins, keys,
 and LEDs, and provides access to all of the attributes and methods associated 
 with it.
@@ -300,7 +305,7 @@ and blue. For example, to set all of the keys to magenta:
 keybow.set_all(255, 0, 255)
 ```
 
-To set an individal key through your `Keybow` class instance, you can do as
+To set an individual key through your `Keybow` class instance, you can do as
 follows, to set key 0 to white:
 
 ```
@@ -374,10 +379,10 @@ up that key yellow when it is pressed, turns all of the LEDs on when held, and
 turns them all off when released:
 
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
-from keybow2040 import Keybow2040
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+from pmk import PMK
 
-keybow = Keybow2040(Hardware())
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 key = keys[0]
@@ -454,15 +459,15 @@ Here's an example of setting up a keyboard object and sending a `0` key press
 when key 0 is pressed, using an `.on_press()` decorator:
 
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
-from keybow2040 import Keybow2040
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+from pmk import PMK
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
 
-keybow = Keybow2040(Hardware())
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 keyboard = Keyboard(usb_hid.devices)
@@ -487,15 +492,15 @@ number of the key press registered by the `press_handler` function as an index
 into your keymap to get the keycode to send for each key.
 
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
-from keybow2040 import Keybow2040
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+from pmk import PMK
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
 
-keybow = Keybow2040(Hardware())
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 keyboard = Keyboard(usb_hid.devices)
@@ -542,15 +547,15 @@ Rather than the incovenience of sending multiple keycodes using
 once, using the `layout` object we created.
 
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
-from keybow2040 import Keybow2040
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+from pmk import PMK
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
 
-keybow = Keybow2040(Hardware())
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 keyboard = Keyboard(usb_hid.devices)
@@ -606,15 +611,15 @@ or MIDI note number 60) when key 0 is pressed, sending a note on message when
 pressed and a note off message when released.
 
 ```
-from keybow_hardware.pim56x import PIM56X as Hardware
-from keybow2040 import Keybow2040
+from pmk.platform.keybow2040 import Keybow2040 as Hardware
+from pmk import PMK
 
 import usb_midi
 import adafruit_midi
 from adafruit_midi.note_off import NoteOff
 from adafruit_midi.note_on import NoteOn
 
-keybow = Keybow2040(Hardware())
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 midi = adafruit_midi.MIDI(midi_out=usb_midi.ports[1], out_channel=0)

@@ -23,7 +23,7 @@
 
 import board
 import time
-from keybow2040 import Keybow2040
+from pmk import PMK
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard

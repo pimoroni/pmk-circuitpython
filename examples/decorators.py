@@ -5,15 +5,15 @@
 # This example demonstrates attaching functions to keys using decorators, and
 # the ability to turn the LEDs off with led_sleep_enabled and led_sleep_time.
 
-# Drop the `keybow2040.py` file and `keybow_hardware` folder
+# Drop the `pmk` folder
 # into your `lib` folder on your `CIRCUITPY` drive.
 
-from keybow2040 import Keybow2040
-from keybow_hardware.pim56x import PIM56X as Hardware # for Keybow 2040
-#from keybow_hardware.pim551 import PIM551 as Hardware # for Pico RGB Keypad Base
+from pmk import PMK
+from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
+#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
 
 # Set up Keybow
-keybow = Keybow2040(Hardware())
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 # Enable LED sleep and set a time of 5 seconds before the LEDs turn off.
