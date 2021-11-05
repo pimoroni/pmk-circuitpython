@@ -13,10 +13,9 @@
 
 # NOTE! Requires the adafruit_midi CircuitPython library also!
 
-import time
 from pmk import PMK
-from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
-#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
+from pmk.platform.keybow2040 import Keybow2040 as Hardware          # for Keybow 2040
+# from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware  # for Pico RGB Keypad Base
 
 import usb_midi
 import adafruit_midi

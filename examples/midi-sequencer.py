@@ -4,16 +4,16 @@
 
 # A MIDI step sequencer, with four tracks and eight steps per track.
 
-# The eight steps are on the top two rows of keys. Steps can be toggled on by 
+# The eight steps are on the top two rows of keys. Steps can be toggled on by
 # tapping a step's key. Active steps are indicated with a brighter LED, and the
 # currently playing step in the sequence is shown with a moving LED across the
 # eight steps.
 
 # Each track is colour-coded: track 1 is orange, track 2 blue, track 3 is pink,
-# and track 4 is green. Tracks can be selected by pressing and holding the 
+# and track 4 is green. Tracks can be selected by pressing and holding the
 # bottom left orange track select key and then tapping one of the four track
 # keys on the row above. The currently focussed track's track select key (on the
-# second bottom row) is highlighted in a brighter colour.
+# second bottom row) is highlighted in a brighter colour.
 
 # A track can be toggled on or off (no notes are sent from that track, but notes
 # are not deleted) by tapping the track's track select key. The track select LED
@@ -30,7 +30,7 @@
 # then holding the start/stop key.
 
 # Tempo can be increased or decreased by holding the tempo selector key (blue,
-# second from left, on the bottom row) and then tapping blue key on the row 
+# second from left, on the bottom row) and then tapping blue key on the row
 # above to shift tempo down, or the pink key to shift it up. Tempo is increased/
 # decreased by 5 BPM on each press.
 
@@ -51,8 +51,8 @@
 
 import time
 from pmk import PMK
-from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
-#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
+from pmk.platform.keybow2040 import Keybow2040 as Hardware          # for Keybow 2040
+# from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware  # for Pico RGB Keypad Base
 
 import usb_midi
 import adafruit_midi
@@ -60,7 +60,7 @@ from adafruit_midi.note_off import NoteOff
 from adafruit_midi.note_on import NoteOn
 
 
-## CONSTANTS. Change these to change the look and feel of the sequencer.
+# CONSTANTS. Change these to change the look and feel of the sequencer.
 
 # These are the key numbers that represent each step in a track (the top two
 # rows of four keys)
@@ -91,7 +91,7 @@ START_COLOUR = GREEN
 STOP_COLOUR = RED
 
 # The key second from left on the bottom row, blue. When pressed, it brings up
-# the tempo down/up buttons on the row above it. The left blue key shifts the 
+# the tempo down/up buttons on the row above it. The left blue key shifts the
 # tempo down, the right pink key shifts the tempo up.
 TEMPO_SELECTOR = 4
 TEMPO_SELECTOR_COLOUR = BLUE
@@ -133,10 +133,10 @@ MAX_NOTE = 127
 VELOCITY_STEP = 4
 
 
-class Sequencer(Keybow2040):
+class Sequencer(PMK):
     """
     Represents the sequencer, with a set of Track instances, which in turn have
-    a set of Step instances. This class is a subclass of the Keybow2040 class,
+    a set of Step instances. This class is a subclass of the PMK class,
     so it inherits all of its methods and key methods.
 
     :param hardware: object representing a board hardware
@@ -218,7 +218,7 @@ class Sequencer(Keybow2040):
         self.track_selector = self.keys[TRACK_SELECTOR]
         self.track_selector.set_led(*TRACK_SELECTOR_COLOUR)
 
-        # Set the key hold time for all the keys. A little shorter than the 
+        # Set the key hold time for all the keys. A little shorter than the
         # default for Keybow. Makes controlling the sequencer a bit more fluid.
         for key in self.keys:
             key.hold_time = KEY_HOLD_TIME
@@ -282,13 +282,13 @@ class Sequencer(Keybow2040):
         # 5 bpm each time it is pressed, with a lower limit of 5 BPM and upper
         # limit of 200 BPM.
         #
-        # If notes are held, then the four track select keys allow the held 
+        # If notes are held, then the four track select keys allow the held
         # notes MIDI note number to be shifted down/up (track select keys 0
         # and 1 respectively), or MIDI velocity to be shifted down/up (track
         # select keys 2 and 3 respectively).
         #
         # If the track selector is not held, tapping this track button toggles
-        #the track on/off.
+        # the track on/off.
         for key in self.track_select_keys:
 
             @self.on_press(key)
@@ -337,7 +337,7 @@ class Sequencer(Keybow2040):
                 index = TRACK_SELECTOR_KEYS.index(key.number)
                 self.track_select_keys_held[index] = False
 
-        # Attach press function to start/stop key that toggles whether the 
+        # Attach press function to start/stop key that toggles whether the
         # sequencer is running and toggles its colour between green (running)
         # and red (not running).
         @self.on_press(self.start_stop)
@@ -391,7 +391,7 @@ class Sequencer(Keybow2040):
             self.update_track_select_keys(True)
 
     def update(self):
-        # Update the superclass (Keybow2040).
+        # Update the superclass (PMK).
         super(Sequencer, self).update()
 
         if self.running:
@@ -407,7 +407,7 @@ class Sequencer(Keybow2040):
                         last_step.playing = False
                         last_step.update()
                         last_note = last_step.note
- 
+
                         # Helps prevent stuck notes.
                         if last_step.note_changed:
                             for note in last_step.last_notes:
@@ -494,7 +494,7 @@ class Track:
         self.update_track_select_key = True
         self.select_key = self.sequencer.track_select_keys[self.index]
 
-        # For each key in the track, create a Step instance and add to 
+        # For each key in the track, create a Step instance and add to
         # self.steps.
         for i, key in enumerate(self.track_keys):
             step = Step(i, key, self)
@@ -522,7 +522,7 @@ class Track:
 
         r, g, b = TRACK_COLOURS[self.index]
 
-        # Only update these keys if required, as it affects the BPM when 
+        # Only update these keys if required, as it affects the BPM when
         # constantly updating them. Light the focussed track in a bright colour.
         # Turn the LED off for tracks that aren't active.
         if self.update_track_select_key:
@@ -541,7 +541,6 @@ class Track:
                 r, g, b = rgb_with_brightness(r, g, b, brightness=HIGH_BRIGHTNESS)
                 self.select_key.set_led(r, g, b)
                 self.update_track_select_key = False
-
 
     def update_steps(self):
         # Update a tracks steps.
@@ -615,7 +614,7 @@ class Step:
                     if self.playing and not self.active:
                         self.set_led(r, g, b, LOW_BRIGHTNESS)
 
-                    # Make an active step that is not playing a low-medium 
+                    # Make an active step that is not playing a low-medium
                     # brightness to indicate that it is toggled active.
                     if not self.playing and self.active:
                         self.set_led(r, g, b, MID_BRIGHTNESS)

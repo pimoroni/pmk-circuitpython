@@ -22,8 +22,8 @@
 
 import math
 from pmk import PMK, number_to_xy, hsv_to_rgb
-from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
-#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
+from pmk.platform.keybow2040 import Keybow2040 as Hardware          # for Keybow 2040
+# from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware  # for Pico RGB Keypad Base
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
@@ -36,19 +36,19 @@ from adafruit_hid.keycode import Keycode
 # * CONTROL + SHIFT + KEYCODE - when toggled on
 # * CONTROL + ALT + KEYCODE - when toggled off
 keycodes = [
-    (Keycode.KEYPAD_FIVE,  True),      # Bottom 1
+    (Keycode.KEYPAD_FIVE, True),       # Bottom 1
     (Keycode.KEYPAD_ONE, True),        # Bottom 1
     Keycode.FIVE,
     Keycode.ONE,
-    (Keycode.KEYPAD_SIX,  True),       # Bottom 2
-    (Keycode.KEYPAD_TWO,  True),       # Bottom 2
+    (Keycode.KEYPAD_SIX, True),        # Bottom 2
+    (Keycode.KEYPAD_TWO, True),        # Bottom 2
     Keycode.SIX,
     Keycode.TWO,
     (Keycode.KEYPAD_SEVEN, True),      # Bottom 3
     (Keycode.KEYPAD_THREE, True),      # Bottom 3
     Keycode.SEVEN,
     Keycode.THREE,
-    (Keycode.KEYPAD_EIGHT,  True),     # Bottom 4
+    (Keycode.KEYPAD_EIGHT, True),      # Bottom 4
     (Keycode.KEYPAD_FOUR, True),       # Bottom 4
     Keycode.EIGHT,
     Keycode.FOUR

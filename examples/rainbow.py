@@ -9,8 +9,8 @@
 
 import math
 from pmk import PMK, number_to_xy, hsv_to_rgb
-from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
-#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
+from pmk.platform.keybow2040 import Keybow2040 as Hardware          # for Keybow 2040
+# from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware  # for Pico RGB Keypad Base
 
 # Set up Keybow
 keybow = PMK(Hardware())

@@ -2,15 +2,15 @@
 #
 # SPDX-License-Identifier: MIT
 
-# This example demonstrates the use of a modifier key to pick the colour of the 
+# This example demonstrates the use of a modifier key to pick the colour of the
 # keys' LEDs, as well as the LED sleep functionality.
 
 # Drop the `pmk` folder
 # into your `lib` folder on your `CIRCUITPY` drive.
 
-from pmk import PMK, number_to_xy, hsv_to_rgb
-from pmk.platform.keybow2040 import Keybow2040 as Hardware # for Keybow 2040
-#from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware # for Pico RGB Keypad Base
+from pmk import PMK, hsv_to_rgb
+from pmk.platform.keybow2040 import Keybow2040 as Hardware          # for Keybow 2040
+# from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware  # for Pico RGB Keypad Base
 
 MODIFIER_KEY = 0
 

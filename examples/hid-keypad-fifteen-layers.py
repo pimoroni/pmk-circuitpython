@@ -10,7 +10,7 @@
 # An advanced example of how to set up a HID keyboard.
 
 # There are four layers defined out of fifteen possible,
-# selected by pressing and holding key 0 (bottom left), 
+# selected by pressing and holding key 0 (bottom left),
 # then tapping one of the coloured layer selector keys to switch layer.
 
 # The defined layer colours are as follows:
@@ -21,9 +21,10 @@
 #             vol. up on row two
 #  * layer 4: white: sends mixxx controls
 
-import board
 import time
 from pmk import PMK
+from pmk.platform.keybow2040 import Keybow2040 as Hardware          # for Keybow 2040
+# from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware  # for Pico RGB Keypad Base
 
 import usb_hid
 from adafruit_hid.keyboard import Keyboard
@@ -34,8 +35,7 @@ from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 
 # Set up Keybow
-i2c = board.I2C()
-keybow = Keybow2040(i2c)
+keybow = PMK(Hardware())
 keys = keybow.keys
 
 # Set up the keyboard and layout
@@ -140,8 +140,8 @@ print("Starting!")
 mode = 0
 count = 0
 
-# To prevent the strings (as opposed to single key presses) that are sent from 
-# refiring on a single key press, the debounce time for the strings has to be 
+# To prevent the strings (as opposed to single key presses) that are sent from
+# refiring on a single key press, the debounce time for the strings has to be
 # longer.
 
 short_debounce = 0.03
@@ -156,7 +156,7 @@ while True:
     # if no key is pressed ensure not locked in layer change mode
     if ((mode == 2) & keybow.none_pressed()):
         mode = 0
-        
+
     if modifier.held:
         # set to looking to change the keypad layer
         for layer in layers.keys():
@@ -170,7 +170,7 @@ while True:
                     keys[k].set_led(*colours[k])
                 keys[0].set_led(0, 255, 0)
                 mode = 2
-            
+
             # Change current layer if layer key is pressed
             if selectors[layer].pressed:
                 if mode >= 1:
@@ -193,7 +193,7 @@ while True:
                 keys[k].set_led(0, 0, 0)
             for k in layers[current_layer].keys():
                 keys[k].set_led(*colours[current_layer])
-                
+
     # Loop through all of the keys in the layer and if they're pressed, get the
     # key code from the layer's key map
     for k in layers[current_layer].keys():
@@ -206,10 +206,7 @@ while True:
 
                 # Send the right sort of key press and set debounce for each
                 # layer accordingly (layer 2 needs a long debounce)
-                if (
-                        (current_layer == 1) |
-                        (current_layer == 4)
-                ):
+                if current_layer == 1 or current_layer == 4:
                     debounce = short_debounce
                     keyboard.send(key_press)
                 elif current_layer == 2:
