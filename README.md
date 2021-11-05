@@ -19,9 +19,10 @@ individual keys and the whole Keybow (a collection of Key instances).
 # Index <!-- omit in toc -->
 
 - [Getting started quickly!](#getting-started-quickly)
-  - [Basic Requirements](#basic-requirements)
-  - [Keybow 2040 Requirements](#keybow-2040-requirements)
-  - [Pico RGB Keypad Requirements](#pico-rgb-keypad-requirements)
+  - [Preparing Your Device](#preparing-your-device)
+    - [Keybow 2040](#keybow-2040)
+    - [Pico RGB Keypad](#pico-rgb-keypad)
+  - [Installing PMK](#installing-pmk)
 - [Library functionality](#library-functionality)
   - [Imports and setup](#imports-and-setup)
   - [The Keybow class](#the-keybow-class)
@@ -43,14 +44,60 @@ individual keys and the whole Keybow (a collection of Key instances).
 
 # Getting started quickly!
 
-## Basic Requirements
+## Preparing Your Device
+
+### Keybow 2040
+
+You'll need to grab the latest version of Adafruit's Keybow 2040-flavoured
+CircuitPython, from the link below.
+
+[Download the Adafruit CircuitPython binary for Keybow 2040](https://circuitpython.org/board/pimoroni_keybow2040/)
+
+Unplug your Keybow 2040's USB-C cable, press and hold the button on the top edge
+of Keybow 2040 while plugging the USB-C cable back into your computer to mount
+it as a drive (it should show up as `RPI-RP2` or something similar).
+
+Drag and drop the `adafruit-circuitpython-pimoroni_keybow2040-en_US-XXXXX.uf2`
+file that you downloaded onto the drive and it should reboot and load the
+CircuitPython firmware. The drive should now show up as `CIRCUITPY`.
+
+The Adafruit IS31FL3731 LED driver library for CircuitPython is a prequisite for
+this Keybow 2040 library, so you'll need to download it from GitHub at the link
+below, and then drop the `adafruit_is31fl3731` folder into the `lib` folder on
+your `CIRCUITPY` drive.
+
+[Download the Adafruit IS31FL3731 CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_IS31FL3731)
+
+### Pico RGB Keypad
+
+You'll need to grab the latest version of Adafruit's Raspberry Pi Pico-flavoured
+CircuitPython, from the link below.
+
+[Download the Adafruit CircuitPython binary for Raspberry Pi Pico](https://circuitpython.org/board/raspberry_pi_pico/)
+
+Unplug your Pi Pico's micro USB cable, press and hold the BOOTSEL button on the top
+of Pi Pico while plugging the micro USB cable back into your computer to mount
+it as a drive (it should show up as `RPI-RP2` or something similar).
+
+Drag and drop the `adafruit-circuitpython-raspberry_pi_pico-en_US-XXXXX.uf2`
+file that you downloaded onto the drive and it should reboot and load the
+CircuitPython firmware. The drive should now show up as `CIRCUITPY`.
+
+The Adafruit DotStar LED driver library for CircuitPython is a prequisite for
+this Keybow 2040 library, so you'll need to download it from GitHub at the link
+below, and then drop the `adafruit_dotstar.py` file into the `lib` folder on
+your `CIRCUITPY` drive.
+
+[Download the Adafruit DotStar CircuitPython library](<https://github.com/adafruit/Adafruit_CircuitPython_DotStar)
+
+## Installing PMK
 
 Drop the `lib` contents (the `pmk` folder) from this library into the `lib` folder
 on your `CIRCUITPY` drive also, and you're all set!
 
-Pick one of the [examples](examples) (I'd suggest the 
-[reactive.press.py](examples/reactive-press.py) example to begin), copy the 
-code, and save it in the `code.py` file on your `CIRCUITPY` drive using your 
+Pick one of the [examples](examples) (I'd suggest the
+[reactive.press.py](examples/reactive-press.py) example to begin), copy the
+code, and save it in the `code.py` file on your `CIRCUITPY` drive using your
 favourite text editor. As soon as you save the `code.py` file, or make any other
 changes, then it should load up and run the code!
 
@@ -66,50 +113,6 @@ and uncomment the line:
 ```
 from pmk.platform.rgbkeypadbase import RGBKeypadBase as Hardware
 ```
-
-## Keybow 2040 Requirements
-
-You'll need to grab the latest version of Adafruit's Keybow 2040-flavoured
-CircuitPython, from the link below.
-
-[Download the Adafruit CircuitPython binary for Keybow 2040](https://circuitpython.org/board/pimoroni_keybow2040/)
-
-Unplug your Keybow 2040's USB-C cable, press and hold the button on the top edge
-of Keybow 2040 while plugging the USB-C cable back into your computer to mount
-it as a drive (it should show up as `RPI-RP2` or something similar).
-
-Drag and drop the `adafruit-circuitpython-pimoroni_keybow2040-en_US-XXXXX.uf2`
-file that you downloaded onto the drive and it should reboot and load the 
-CircuitPython firmware. The drive should now show up as `CIRCUITPY`.
-
-The Adafruit IS31FL3731 LED driver library for CircuitPython is a prequisite for
-this Keybow 2040 library, so you'll need to download it from GitHub at the link
-below, and then drop the `adafruit_is31fl3731` folder into the `lib` folder on
-your `CIRCUITPY` drive.
-
-[Download the Adafruit IS31FL3731 CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_IS31FL3731)
-
-## Pico RGB Keypad Requirements
-
-You'll need to grab the latest version of Adafruit's Raspberry Pi Pico-flavoured
-CircuitPython, from the link below.
-
-[Download the Adafruit CircuitPython binary for Raspberry Pi Pico](https://circuitpython.org/board/raspberry_pi_pico/)
-
-Unplug your Pi Pico's micro USB cable, press and hold the BOOTSEL button on the top
-of Pi Pico while plugging the micro USB cable back into your computer to mount
-it as a drive (it should show up as `RPI-RP2` or something similar).
-
-Drag and drop the `adafruit-circuitpython-raspberry_pi_pico-en_US-XXXXX.uf2`
-file that you downloaded onto the drive and it should reboot and load the 
-CircuitPython firmware. The drive should now show up as `CIRCUITPY`.
-
-The Adafruit DotStar LED driver library for CircuitPython is a prequisite for
-this Keybow 2040 library, so you'll need to download it from GitHub at the link
-below, and then drop the `adafruit_dotstar.py` file into the `lib` folder on
-your `CIRCUITPY` drive.
-
-[Download the Adafruit DotStar CircuitPython library](<https://github.com/adafruit/Adafruit_CircuitPython_DotStar)
 
 # Library functionality
 
@@ -157,13 +160,13 @@ If you're running them on Pico RGB Keypad Base, don't forget to change it accord
 
 The `PMK()` class, imported from the `pmk` module, is instantiated
 and passed the hardware object. Instantiating this sets up all of the pins, keys,
-and LEDs, and provides access to all of the attributes and methods associated 
+and LEDs, and provides access to all of the attributes and methods associated
 with it.
 
 ## The Keybow class
 
 The Keybow class exposes a number of handy attributes and methods. The main one
-you'll be interested in is the `.keys` attribute, which is a list of `Key` 
+you'll be interested in is the `.keys` attribute, which is a list of `Key`
 class instances, one for each key.
 
 ```
@@ -171,13 +174,13 @@ keys = keybow.keys
 ```
 
 The indices of the keys in that list correspond to their position on the keypad,
-staring from the bottom left corner (when the USB connector is at the top), 
+staring from the bottom left corner (when the USB connector is at the top),
 which is key 0, going upwards in columns, and ending at the top right corner,
 which is key 15.
 
 More about the `Key` class later...
 
-A **super** important method of the `Keybow` class is `.update()` method. It 
+A **super** important method of the `Keybow` class is `.update()` method. It
 updates all of the keys, key states, and other attributes like the time of the
 last key press, and sleep state of the LEDs.
 
@@ -191,7 +194,7 @@ while True:
 
 ## An interlude on timing!
 
-Another **super** important thing is **not to include any `time.sleep()`s in 
+Another **super** important thing is **not to include any `time.sleep()`s in
 your main loop!** Doing so will ruin the latency and mean that you'll miss key
 press events. Just don't do it.
 
@@ -228,11 +231,11 @@ instances themselves.
 
 ### Keybow class methods for detecting presses and key states
 
-`keybow.get_states()` will return a list of the state of all of the keys, in 
+`keybow.get_states()` will return a list of the state of all of the keys, in
 order, with a state of `0` being not pressed, and `1` being pressed. You can
 then loop through that list to do whatever you like.
 
-`keybow.get_pressed()` will return a list of the key numbers (indices in the 
+`keybow.get_pressed()` will return a list of the key numbers (indices in the
 list of keys) that are currently pressed. If you only care about key presses,
 then this is an efficient way to do things, especially since you have all the
 key numbers in a list.
@@ -241,7 +244,7 @@ key numbers in a list.
 any keys are currently being pressed. Handy if you want to attach a behaviour to
 all of the keys, which this is effectively a proxy for.
 
-`keybow.none_pressed()` is similar to `.any_pressed()`, in that it returns a 
+`keybow.none_pressed()` is similar to `.any_pressed()`, in that it returns a
 Boolean also, but... you guessed it, it returns `True` if no keys are being
 pressed, and `False` if any keys are pressed.
 
@@ -265,12 +268,12 @@ and `False` if it is not pressed.
 `key.state` is another way to check the state of a key. It will equal `1` if the
 key is pressed and `0` if it is not pressed.
 
-If you want to attach an additional behaviour to your key, you can use 
+If you want to attach an additional behaviour to your key, you can use
 `key.held` to check if a key is being key rather than being pressed and released
 quickly. It returns `True` if the key is held and `False` if it is not.
 
 The default hold time (after which `key.held` is `True`) for all of the keys is
-0.75 seconds, but you can change `key.hold_time` to adjust this to your liking, 
+0.75 seconds, but you can change `key.hold_time` to adjust this to your liking,
 on a per key basis.
 
 This means that we could extend the example above to be:
@@ -298,7 +301,7 @@ or on a per-key basis, either through the `Keybow` class, or using a `Key` class
 instance.
 
 To set all of the keys to the same colour, you can use the `.set_all()` method
-of the `Keybow` class, to which you pass three 0-255 integers for red, green, 
+of the `Keybow` class, to which you pass three 0-255 integers for red, green,
 and blue. For example, to set all of the keys to magenta:
 
 ```
@@ -319,16 +322,16 @@ To set the colour on the key itself, you could do as follows, again to set key
 keybow.keys[0].set_led(255, 255, 255)
 ```
 
-A key retains its RGB value, even if it is turned off, so once a key has its 
+A key retains its RGB value, even if it is turned off, so once a key has its
 colour set with `key.rgb = (255, 0, 0)` for example, you can turn it off using
 `key.led_off()` or even `key.set_led(0, 0, 0)` and then when you turn it back on
 with `key.led_on()`, then it will still be red when it comes back on.
 
-As a convenience, and to avoid having to check `key.lit`, there is a 
-`key.toggle_led()` method that will toggle the current state of the key's LED 
+As a convenience, and to avoid having to check `key.lit`, there is a
+`key.toggle_led()` method that will toggle the current state of the key's LED
 (on to off, and _vice versa_).
 
-There's a handy `hsv_to_rgb()` function that can be imported from the 
+There's a handy `hsv_to_rgb()` function that can be imported from the
 `keybow2040` module to convert an HSV colour (a tuple of floats from 0.0 to 1.0)
 to an RGB colour (a tuple of integers from 0 to 255), as follows:
 
@@ -349,10 +352,10 @@ how to animate the keys' LEDs, including the use of the `hsv_to_rgb()` function.
 
 The `Keybow` class has an `.led_sleep_enabled` attribute that is disabled (set to
 `False`) by default, and an `.led_sleep_time` attribute (set to 60 seconds by
-default) that determines how many seconds need to elapse before LED sleep is 
+default) that determines how many seconds need to elapse before LED sleep is
 triggered and the LEDs turn off.
- 
-The time elapsed since the last key press is constantly updated when 
+
+The time elapsed since the last key press is constantly updated when
 `keybow.update()` is called in your main loop, and if the `.led_sleep_time` is
 exceeded then LED sleep is triggered.
 
@@ -366,16 +369,16 @@ keybow.led_sleep_enabled = True
 keybow.led_sleep_time = 10
 ```
 
-There's also a `.sleeping` attribute that returns a Boolean, that you can check 
+There's also a `.sleeping` attribute that returns a Boolean, that you can check
 to see whether the LEDs are sleeping or not.
 
 ## Attaching functions to keys with decorators
 
-There are three decorators that can be attached to functions to link that 
+There are three decorators that can be attached to functions to link that
 function to, i) a key press, ii) a key release, or iii) a key hold.
 
 Here's an example of how you could attach a decorator to a function that lights
-up that key yellow when it is pressed, turns all of the LEDs on when held, and 
+up that key yellow when it is pressed, turns all of the LEDs on when held, and
 turns them all off when released:
 
 ```
@@ -412,7 +415,7 @@ to use the `.on_hold()` decorator to toggle LEDs on and off when a key is held.
 
 Key combos can provide a way to add additional behaviours to keys that only get
 triggered if a combination of keys is pressed. The best way to achieve this is
-using the `.held` attribute of a key, meaning that the key can also have a 
+using the `.held` attribute of a key, meaning that the key can also have a
 `.pressed` behaviour too.
 
 Here's a brief example of how you could do this inside your main loop, with key
@@ -439,13 +442,13 @@ using a modifier key to change the hue of the keys.
 
 # USB HID
 
-This covers setting up a USB HID keyboard and linking physical key presses to 
+This covers setting up a USB HID keyboard and linking physical key presses to
 keyboard key presses on a connected computer.
 
 ## Setup
 
 USB HID requires the `adafruit_hid` CircuitPython library. Download it from the
-link below and drop the `adafruit_hid` folder into the `lib` folder on your 
+link below and drop the `adafruit_hid` folder into the `lib` folder on your
 `CIRCUITPY` drive.
 
 [Download the Adafruit HID CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_HID)
@@ -533,11 +536,11 @@ while True:
     keybow.update()
 ```
 
-This code is available in the 
+This code is available in the
 [hid-keys-simple.py example](examples/hid-keys-simple.py).
 
 As well as sending a single keypress, you can send multiple keypresses at once,
-simply by adding them as additional argumemnts to `keyboard.send()`, e.g. 
+simply by adding them as additional argumemnts to `keyboard.send()`, e.g.
 `keyboard.send(Keycode.A, Keycode.B)` and so on.
 
 ## Sending strings of text
@@ -574,11 +577,11 @@ while True:
 A press of key 0 will send that whole string of text at once!
 
 Be aware that strings sent like that take a little while to  virtually "type",
-so you might want to incorporate a delay using  `keybow.time_of_last_press`, 
-and then check against a `time_elapsed` variable created with 
+so you might want to incorporate a delay using  `keybow.time_of_last_press`,
+and then check against a `time_elapsed` variable created with
 `time_elapsed = time.monotonic() - keybow.time_of_last_press`.
 
-Also, be aware that the Adafruit HID CircuitPython library only currently 
+Also, be aware that the Adafruit HID CircuitPython library only currently
 supports US Keyboard layouts, so you'll have to work around that and map any
 keycodes that differ from their US counterpart to whatever your is.
 
@@ -599,7 +602,7 @@ software synth or DAW like Ableton Live, to a hardware synth that accepts USB
 MIDI, or through a MIDI interface that will convert the USB MIDI messages to
 regular serial MIDI through a DIN connector.
 
-Using USB MIDI, Keybow 2040 shows up as a device with the name 
+Using USB MIDI, Keybow 2040 shows up as a device with the name
 `Keybow 2040 (CircuitPython usb midi.ports[1])`
 
 In my testing, Keybow 2040 works with the Teenage Engineering OP-Z quite nicely.
@@ -641,8 +644,8 @@ while True:
         was_pressed = False
 ```
 
-There'a more complete example of how to set up all of Keybow's keys with 
-associated MIDI notes using decorators in the 
+There'a more complete example of how to set up all of Keybow's keys with
+associated MIDI notes using decorators in the
 [midi-keys.py example](examples/midi-keys.py).
 
 The example above, and the `midi-keys.py` example both send notes on MIDI
