@@ -41,6 +41,10 @@ a 16-key mini rubber keyboard with RGB backlit keys.
 
 # Getting started quickly!
 
+For a more verbose installation guide with screenshots, check out our Learn guide:
+
+[CircuitPython and Keybow 2040](https://learn.pimoroni.com/article/circuitpython-and-keybow-2040)
+
 ## Preparing Your Device
 
 ### Keybow 2040
@@ -50,9 +54,8 @@ CircuitPython, from the link below.
 
 [Download the Adafruit CircuitPython binary for Keybow 2040](https://circuitpython.org/board/pimoroni_keybow2040/)
 
-Unplug your Keybow 2040's USB-C cable, press and hold the button on the top edge
-of Keybow 2040 while plugging the USB-C cable back into your computer to mount
-it as a drive (it should show up as `RPI-RP2` or something similar).
+Unplug your Keybow 2040's USB-C cable, press and hold the BOOTSEL button while plugging the USB-C cable back into your computer to mount
+it as a drive (it should show up as `RPI-RP2` or something similar). The BOOTSEL button is to the right of the USB-C port, assuming your Keybow is oriented with keys pointing upwards and with the USB-C port at the top edge.
 
 Drag and drop the `adafruit-circuitpython-pimoroni_keybow2040-en_US-XXXXX.uf2`
 file that you downloaded onto the drive and it should reboot and load the
@@ -85,7 +88,7 @@ this Keybow 2040 library, so you'll need to download it from GitHub at the link
 below, and then drop the `adafruit_dotstar.py` file into the `lib` folder on
 your `CIRCUITPY` drive.
 
-[Download the Adafruit DotStar CircuitPython library](<https://github.com/adafruit/Adafruit_CircuitPython_DotStar)
+[Download the Adafruit DotStar CircuitPython library](https://github.com/adafruit/Adafruit_CircuitPython_DotStar)
 
 ## Installing PMK
 
