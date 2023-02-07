@@ -67,7 +67,7 @@ class PMK(object):
         self.sleeping = False
         self.was_asleep = False
         self.last_led_states = None
-        # self.rotation = 0
+        self.rotation = 0
 
         for i in range(self.hardware.num_keys()):
             _key = Key(i, self.hardware)
@@ -215,37 +215,36 @@ class PMK(object):
         else:
             return attach_handler
 
-    # def rotate(self, degrees):
-    #     # Rotates all of Keybow's keys by a number of degrees, clamped to
-    #     # the closest multiple of 90 degrees. Because it shuffles the order
-    #     # of the Key instances, all of the associated attributes of the key
-    #     # are retained. The x/y coordinate of the keys are rotated also. It
-    #     # also handles negative degrees, e.g. -90 to rotate 90 degrees anti-
-    #     # clockwise.
+    def rotate(self, degrees):
+        # Rotates all of Keybow's keys by a number of degrees, clamped to
+        # the closest multiple of 90 degrees. Because it shuffles the order
+        # of the Key instances, all of the associated attributes of the key
+        # are retained. The x/y coordinate of the keys are rotated also. It
+        # also handles negative degrees, e.g. -90 to rotate 90 degrees anti-
+        # clockwise.
 
-    #     # Rotate as follows: `keybow.rotate(270)`
+        # Rotate as follows: `keybow.rotate(270)`
 
-    #     self.rotation = degrees
-    #     num_rotations = degrees // 90
+        old_rotation = self.rotation
+        self.rotation += degrees
+        num_rotations = (round(self.rotation / 90) - round(old_rotation / 90)) % 4
 
-    #     if num_rotations == 0:
-    #         return
+        if num_rotations == 0:
+            return
 
-    #     if num_rotations < 1:
-    #         num_rotations = 4 + num_rotations
+        matrix = [[(x * 4) + y for y in range(4)] for x in range(4)]
 
-    #     matrix = [[(x * 4) + y for y in range(4)] for x in range(4)]
+        for r in range(num_rotations):
+            matrix = zip(*matrix[::-1])
+            matrix = [list(x) for x in list(matrix)]
 
-    #     for r in range(num_rotations):
-    #         matrix = zip(*matrix[::-1])
-    #         matrix = [list(x) for x in list(matrix)]
+        flat_matrix = [x for y in matrix for x in y]
 
-    #     flat_matrix = [x for y in matrix for x in y]
+        for i in range(len(self.keys)):
+            self.keys[i].number = flat_matrix[i]
+            self.keys[i].update_xy()
 
-    #     for i in range(len(self.keys)):
-    #         self.keys[i].number = flat_matrix[i]
-
-    #     self.keys = sorted(self.keys, key=lambda x:x.number)
+        self.keys = sorted(self.keys, key=lambda x:x.number)
 
 
 class Key:
@@ -259,6 +258,7 @@ class Key:
     def __init__(self, number, hardware):
         self.hardware = hardware
         self.number = number
+        self.hw_number = number
         self.state = 0
         self.pressed = 0
         self.last_state = None
@@ -270,8 +270,6 @@ class Key:
         self.modifier = False
         self.rgb = [0, 0, 0]
         self.lit = False
-        self.xy = self.get_xy()
-        self.x, self.y = self.xy
         self.led_off()
         self.press_function = None
         self.release_function = None
@@ -280,11 +278,12 @@ class Key:
         self.hold_func_fired = False
         self.debounce = 0.125
         self.key_locked = False
+        self.update_xy()
 
     def get_state(self):
         # Returns the state of the key (0=not pressed, 1=pressed).
 
-        return int(self.hardware.switch_state(self.number))
+        return int(self.hardware.switch_state(self.hw_number))
 
     def update(self):
         # Updates the state of the key and updates all of its
@@ -345,6 +344,10 @@ class Key:
             self.held = False
             self.hold_func_fired = False
 
+    def update_xy(self):
+        self.xy = self.get_xy()
+        self.x, self.y = self.xy
+
     def get_xy(self):
         # Returns the x/y coordinate of a key from 0,0 to 3,3.
 
@@ -353,7 +356,7 @@ class Key:
     def get_number(self):
         # Returns the key number, from 0 to 15.
 
-        return xy_to_number(self.x, self.y)
+        return self.number
 
     def is_modifier(self):
         # Designates a modifier key, so you can hold the modifier
@@ -373,7 +376,7 @@ class Key:
             self.lit = True
             self.rgb = [r, g, b]
 
-        self.hardware.set_pixel(self.number, r, g, b)
+        self.hardware.set_pixel(self.hw_number, r, g, b)
 
     def led_on(self):
         # Turn the LED on, using its current RGB value.
