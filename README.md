@@ -38,6 +38,7 @@ a 16-key mini rubber keyboard with RGB backlit keys.
 - [USB MIDI](#usb-midi)
   - [Setup](#setup-1)
   - [Sending MIDI notes](#sending-midi-notes)
+- [Other Resources](#other-resources)
 
 # Getting started quickly!
 
@@ -654,3 +655,9 @@ associated MIDI notes using decorators in the
 The example above, and the `midi-keys.py` example both send notes on MIDI
 channel 0 (all channels), but you can set this to a specific channel, if you
 like, by changing `out_channel=` when you instantiate your `midi` object.
+
+# Other Resources
+
+Here are some cool community projects and resources that you might find useful / inspirational! Note that code at the links below has not been tested by us and we're not able to offer support with it.
+
+- :link: [OBS Controller using Raspberry Pi Pico and Pimoroni RGB Keypad](https://vimeo.com/802443378)
