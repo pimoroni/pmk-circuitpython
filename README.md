@@ -196,6 +196,18 @@ while True:
     pmk.update()
 ```
 
+## Rotation
+
+If you're using your keypad in a different orientation, you can use the `.rotate()` method to make sure your key numbers are in the logical order. 
+
+The default PMK key arrangement doesn't match the Pico RGB Keypad Base (`RGBKeypadBase`) circuitboard labels. You can fix it by rotating the keys 90 degrees
+
+```
+pmk = PMK(Hardware())
+pmk.rotate(90)
+```
+
+
 ## An interlude on timing!
 
 Another **super** important thing is **not to include any `time.sleep()`s in
