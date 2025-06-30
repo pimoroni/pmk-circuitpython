@@ -260,7 +260,7 @@ class Key:
         self.number = number
         self.hw_number = number
         self.state = 0
-        self.pressed = 0
+        self.pressed = False
         self.last_state = None
         self.time_of_last_press = time.monotonic()
         self.time_since_last_press = None
@@ -298,7 +298,7 @@ class Key:
             self.key_locked = False
 
         self.state = self.get_state()
-        self.pressed = self.state
+        self.pressed = bool(self.state)
         update_time = time.monotonic()
 
         # If there's a `press_function` attached, then call it,
