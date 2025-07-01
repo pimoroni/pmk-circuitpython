@@ -668,6 +668,30 @@ The example above, and the `midi-keys.py` example both send notes on MIDI
 channel 0 (all channels), but you can set this to a specific channel, if you
 like, by changing `out_channel=` when you instantiate your `midi` object.
 
+
+## Midi keys example directions
+
+[midi-keys.py](https://github.com/pimoroni/pmk-circuitpython/blob/main/examples/midi-keys.py) example requires you to download the adafruit midi libraries.
+
+You will need the following libraries added to lib in addition to the basic setup (you can either drag 'n drop the files or install with command line):
+- [adafruit_bus_device](https://github.com/adafruit/Adafruit_CircuitPython_BusDevice)
+- [adafruit_register](https://github.com/adafruit/Adafruit_CircuitPython_Register)
+- [adafruit_midi](https://github.com/adafruit/Adafruit_CircuitPython_MIDI)
+
+
+# Debug and test code
+
+If you are unfamiliar with programming on raspberry pi, consider downloading [Thonny](https://thonny.org/) or another python IDE that automatically works with raspberry pi.
+Thonny will allow you to easily test code and see the shell output of the raspberry pi if your code outputs logs or errors.
+
+To use with Thonny:
+1. Plug your Raspberry Pi Pico into your computer
+2. Download the Thonny app
+3. Open the app
+4. Select the CircuitPython pico interpreter in the bottom right of the Thonny window
+5. Click the "Stop/Restart backend" button to rerun code after making changes.
+6. You can also run code by pasting directly into the IDE interpreter window and clicking the green play button.
+
 # Other Resources
 
 Here are some cool community projects and resources that you might find useful / inspirational! Note that code at the links below has not been tested by us and we're not able to offer support with it.
