@@ -269,7 +269,7 @@ pressed, and `False` if any keys are pressed.
 If we want to check whether key 0 is pressed, we can do so as follows:
 
 ```python
-keys = pmk.keys()
+keys = pmk.keys
 
 while True:
     pmk.update()
@@ -295,7 +295,7 @@ on a per key basis.
 This means that we could extend the example above to be:
 
 ```python
-keys = pmk.keys()
+keys = pmk.keys
 
 while True:
     pmk.update()
